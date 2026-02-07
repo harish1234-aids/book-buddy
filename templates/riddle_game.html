@@ -25,7 +25,6 @@
       height: 100vh;
     }
 
-    /* Moves the whole game down slightly for better mobile viewing */
     #game-container {
       width: 100%;
       max-width: 450px;
@@ -123,7 +122,6 @@
       font-weight: bold;
       color: #333;
       margin-top: -5px;
-      /* Label is hidden in tray, visible in target */
       display: none; 
     }
 
@@ -202,6 +200,14 @@
   <button onclick="location.reload()" style="padding:15px 35px; border-radius:50px; background:var(--sky); color:white; border:none; font-weight:bold; cursor:pointer; box-shadow: 0 5px 0 #1565c0;">PLAY AGAIN 🔄</button>
 </div>
 
+        <a href="{{ url_for('index') }}" 
+   style="position: absolute; top: 10px; left: 10px; z-index: 1001; 
+          text-decoration: none; background: white; padding: 5px 15px; 
+          border-radius: 20px; border: 2px solid #ff6b6b; font-weight: bold; 
+          color: #ff6b6b; font-size: 0.8rem;">
+    🏠 Try More!
+</a>
+
 <script>
   let dragged = null;
   const targets = document.querySelectorAll('.target');
@@ -221,14 +227,13 @@
   }
 
   document.querySelectorAll('.snack').forEach(snack => {
-    // Touch Start
+ 
     snack.addEventListener('touchstart', (e) => {
       dragged = snack;
       snack.style.position = "fixed";
       snack.style.zIndex = "2000";
     }, {passive: false});
 
-    // Touch Move
     snack.addEventListener('touchmove', (e) => {
       if (!dragged) return;
       e.preventDefault();
@@ -247,7 +252,6 @@
       });
     }, {passive: false});
 
-    // Touch End
     snack.addEventListener('touchend', (e) => {
       if (!dragged) return;
       const touch = e.changedTouches[0];
@@ -268,7 +272,6 @@
     });
   });
 
-  // Desktop Events
   document.addEventListener('dragstart', (e) => { if(e.target.classList.contains('snack')) dragged = e.target; });
   targets.forEach(t => {
     t.addEventListener('dragover', e => e.preventDefault());

@@ -18,6 +18,7 @@
             height: 100vh;
             margin: 0;
             overflow: hidden;
+            transition: background 0.5s ease;
         }
 
         .game-container {
@@ -43,9 +44,7 @@
 
         .zone-label { color: #5271FF; font-size: 14px; margin-bottom: 5px; text-transform: uppercase; }
         
-        .slot-container {
-            background: #E8F0FE;
-            border: 3px solid #B4D4FF;
+        .slot-container, .bank-container {
             border-radius: 20px;
             padding: 10px;
             min-height: 70px;
@@ -56,18 +55,8 @@
             margin-bottom: 15px;
         }
 
-        .bank-container {
-            background: #FFE6F2;
-            border: 3px solid #FFB6D9;
-            border-radius: 20px;
-            padding: 10px;
-            min-height: 70px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
+        .slot-container { background: #E8F0FE; border: 3px solid #B4D4FF; }
+        .bank-container { background: #FFE6F2; border: 3px solid #FFB6D9; margin-bottom: 20px; }
 
         .tile {
             width: 44px;
@@ -81,26 +70,33 @@
             border-radius: 12px;
             box-shadow: 0 5px 0 #b34789;
             cursor: pointer;
-            transition: transform 0.1s active;
+            transition: transform 0.1s;
         }
 
-        .tile:active {
-            transform: scale(0.9);
+        @keyframes blink {
+            0% { transform: scale(1); background: #FF66C4; }
+            50% { transform: scale(1.1); background: #FFD700; box-shadow: 0 0 15px #FFD700; }
+            100% { transform: scale(1); background: #FF66C4; }
         }
+        .hint-blink { animation: blink 0.8s infinite ease-in-out; z-index: 10; }
 
-        #actionBtn {
+        .btn-group { display: flex; flex-direction: column; gap: 10px; }
+
+        button {
             width: 100%;
             padding: 15px;
-            background: #38B6FF;
+            font-family: 'Fredoka One', cursive;
+            font-size: 20px;
             border: none;
             border-radius: 15px;
-            color: white;
-            font-family: 'Fredoka One', cursive;
-            font-size: 22px;
-            box-shadow: 0 6px 0 #2a88bf;
             cursor: pointer;
+            color: white;
         }
 
+        #hintBtn { background: #FFBD59; box-shadow: 0 6px 0 #cc9747; }
+        #hintBtn:disabled { background: #ccc; box-shadow: 0 6px 0 #999; cursor: not-allowed; opacity: 0.7; }
+
+        #actionBtn { background: #38B6FF; box-shadow: 0 6px 0 #2a88bf; }
         #actionBtn.wrong { background: #FF5757; box-shadow: 0 6px 0 #c44242; }
 
         .score-board { margin-top: 15px; font-size: 1.2rem; color: #5271FF; }
@@ -117,18 +113,19 @@
 
     <div class="game-container" id="gameBox">
         <div class="clue-box" id="clue">Loading...</div>
-
         <div class="zone-label">Tap letters to build word:</div>
         <div id="answerZone" class="slot-container"></div>
-
         <div class="zone-label">Letter Bank:</div>
         <div id="letterBank" class="bank-container"></div>
 
-        <button id="actionBtn" onclick="checkWord()">Check Answer! ✅</button>
-
+        <div class="btn-group">
+            <button id="hintBtn" onclick="showHint()">Hint 💡 (3)</button>
+            <button id="actionBtn" onclick="handleAction()">Check Answer! ✅</button>
+        </div>
         <div class="score-board" id="scoreText">Stars: 0 ⭐</div>
     </div>
-    <a href="{{ url_for('index') }}" 
+
+                <a href="{{ url_for('index') }}" 
    style="position: absolute; top: 10px; left: 10px; z-index: 1001; 
           text-decoration: none; background: white; padding: 5px 15px; 
           border-radius: 20px; border: 2px solid #ff6b6b; font-weight: bold; 
@@ -147,11 +144,13 @@
 
     let currentIdx = 0;
     let score = 0;
+    let hintsLeft = 3;
     let isErrorState = false;
 
     const answerZone = document.getElementById('answerZone');
     const letterBank = document.getElementById('letterBank');
     const actionBtn = document.getElementById('actionBtn');
+    const hintBtn = document.getElementById('hintBtn');
 
     function initGame() {
         if (currentIdx >= words.length) {
@@ -163,12 +162,16 @@
             return;
         }
 
+        // Reset Hint Counter for new question
+        hintsLeft = 3;
+        updateHintButton();
+
         const data = words[currentIdx];
         document.getElementById("clue").innerText = data.clue;
         answerZone.innerHTML = "";
         letterBank.innerHTML = "";
-        let chars = data.word.split("").sort(() => Math.random() - 0.5);
         
+        let chars = data.word.split("").sort(() => Math.random() - 0.5);
         chars.forEach(char => {
             const tile = document.createElement("div");
             tile.className = "tile";
@@ -176,11 +179,37 @@
             tile.onclick = () => moveTile(tile);
             letterBank.appendChild(tile);
         });
-
         resetButton();
     }
 
+    function updateHintButton() {
+        hintBtn.innerText = `Hint 💡 (${hintsLeft})`;
+        hintBtn.disabled = (hintsLeft <= 0);
+    }
+
+    function showHint() {
+        if (hintsLeft <= 0) return;
+
+        const correctWord = words[currentIdx].word.toUpperCase();
+        const currentBuilt = Array.from(answerZone.children).map(t => t.innerText).join("");
+        const nextLetterNeeded = correctWord[currentBuilt.length];
+
+        if (!nextLetterNeeded) return;
+
+        const bankTiles = Array.from(letterBank.children);
+        const targetTile = bankTiles.find(t => t.innerText === nextLetterNeeded && !t.classList.contains('hint-blink'));
+
+        if (targetTile) {
+            document.querySelectorAll('.tile').forEach(t => t.classList.remove('hint-blink'));
+            targetTile.classList.add('hint-blink');
+            
+            hintsLeft--;
+            updateHintButton();
+        }
+    }
+
     function moveTile(tile) {
+        tile.classList.remove('hint-blink');
         if (isErrorState) resetButton();
 
         if (tile.parentElement.id === "letterBank") {
@@ -191,28 +220,19 @@
     }
 
     function checkWord() {
-        const userWord = Array.from(answerZone.children)
-                              .map(t => t.innerText.toLowerCase())
-                              .join("");
-        
-        const correctWord = words[currentIdx].word;
-
-        if (userWord === correctWord) {
+        const userWord = Array.from(answerZone.children).map(t => t.innerText.toLowerCase()).join("");
+        if (userWord === words[currentIdx].word) {
             score++;
             currentIdx++;
             document.getElementById("scoreText").innerText = "Stars: " + score + " ⭐";
             document.body.style.background = "#7ED957"; 
-            setTimeout(() => {
-                document.body.style.background = ""; 
-                initGame();
-            }, 500);
+            setTimeout(() => { document.body.style.background = ""; initGame(); }, 500);
         } else {
-            const box = document.getElementById("gameBox");
-            box.classList.add("shake");
+            document.getElementById("gameBox").classList.add("shake");
             actionBtn.innerText = "Try Again? 🔄";
             actionBtn.classList.add("wrong");
             isErrorState = true;
-            setTimeout(() => box.classList.remove("shake"), 400);
+            setTimeout(() => document.getElementById("gameBox").classList.remove("shake"), 400);
         }
     }
 
@@ -220,21 +240,19 @@
         actionBtn.innerText = "Check Answer! ✅";
         actionBtn.classList.remove("wrong");
         isErrorState = false;
-
-        if (isErrorState === false) {
-             const tiles = Array.from(answerZone.children);
-             tiles.forEach(t => letterBank.appendChild(t));
-        }
     }
 
     function handleAction() {
         if (isErrorState) {
+            Array.from(answerZone.children).forEach(t => {
+                t.classList.remove('hint-blink');
+                letterBank.appendChild(t);
+            });
             resetButton();
         } else {
             checkWord();
         }
     }
-    actionBtn.onclick = handleAction;
 
     initGame();
 </script>

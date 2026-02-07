@@ -1,297 +1,232 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <title>Summer Snack Party! ☀️</title>
-  <style>
-    :root {
-      --bg: #fff9c4;
-      --sky: #2196f3;
-      --pink: #f06292;
-      --green: #4caf50;
-      --orange: #ff9800;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ravi's Money Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bright-blue: #4cc9f0;
+            --sunny-yellow: #fee440;
+            --leaf-green: #06d6a0;
+            --candy-pink: #f15bb5;
+            --dark-purple: #4a4e8e;
+            --error-red: #ff4d4d;
+            --warning-orange: #ff9f1c;
+        }
 
-    html, body {
-      overflow-x: hidden;
-      overflow-y: auto; 
-      min-height: 100vh;
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      -webkit-overflow-scrolling: touch;
-    }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
-    body {
-      background-color: var(--bg);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      padding: 20px 10px 80px 10px; 
-      padding-top: calc(env(safe-area-inset-top) + 20px); 
-      box-sizing: border-box;
-    }
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center; 
+            min-height: 100vh;
+            padding: 10px;
+            overflow: hidden;
+        }
 
-    h2 { 
-      color: #d32f2f; 
-      margin: 10px 0 20px 0; 
-      font-size: 2rem; 
-      text-shadow: 1px 1px 0px white;
-      text-align: center;
-    }
+        .game-card {
+            background-color: white;
+            width: 100%;
+            max-width: 420px;
+            padding: 25px 20px;
+            border-radius: 30px;
+            box-shadow: 0 8px 0 #cbd5e0;
+            border: 3px solid var(--dark-purple);
+            text-align: center;
+        }
 
-    #clue-board {
-      width: 90%; max-width: 450px;
-      background: white; border: 3px solid var(--orange);
-      border-radius: 15px; padding: 15px; margin-bottom: 25px;
-      box-shadow: 0 4px 0 #e65100;
-    }
+        .header-badge {
+            background-color: var(--candy-pink);
+            color: white;
+            display: inline-block;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
 
-    .clue-item { font-size: 16px; font-weight: bold; color: #5d4037; margin-bottom: 6px; }
+        h2 { color: var(--dark-purple); font-family: 'Fredoka One', cursive; font-size: 1.6rem; margin: 5px 0 20px 0; }
 
-    .grid {
-      display: grid; 
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px; 
-      margin-bottom: 30px;
-      width: 100%;
-      max-width: 500px;
-    }
+        .progress-container { background: #eee; height: 24px; border-radius: 12px; margin-bottom: 25px; overflow: hidden; border: 2px solid #ddd; }
+        #progress-bar { width: 0%; height: 100%; background: var(--bright-blue); transition: width 0.4s ease; }
 
-    .target-box {
-      background: white; padding: 15px; border-radius: 20px;
-      display: flex; flex-direction: column; align-items: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    }
+        .budget-grid { display: grid; gap: 12px; margin-bottom: 20px; }
+        .item-row { display: flex; align-items: center; background: #fdfdfd; padding: 12px; border-radius: 20px; border: 2px solid #f0f0f0; }
+        .icon-circle { width: 45px; height: 45px; background: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-right: 12px; border: 2px solid #eee; }
+        .label-text { flex-grow: 1; text-align: left; font-size: 1.1rem; color: #444; font-weight: 800; }
+        input[type="number"] { width: 85px; padding: 10px 5px; border: 3px solid #e2e8f0; border-radius: 12px; font-family: 'Fredoka One', cursive; text-align: center; font-size: 16px; outline: none; }
 
-    .char-tag {
-      font-size: 14px; font-weight: 800; color: white;
-      padding: 6px 15px; border-radius: 12px; margin-bottom: 12px;
-      width: 90%; text-align: center;
-    }
+        .total-box { background: var(--dark-purple); color: white; padding: 15px; border-radius: 20px; font-size: 1.3rem; font-family: 'Fredoka One', cursive; display: flex; justify-content: space-between; margin-bottom: 15px; }
 
-    .anu { background: var(--pink); }
-    .bala { background: var(--sky); }
-    .chitra { background: #9c27b0; }
-    .deepak { background: var(--green); }
+        .check-btn { width: 100%; padding: 18px; border-radius: 20px; border: none; font-family: 'Fredoka One', cursive; font-size: 1.2rem; cursor: pointer; background: var(--bright-blue); color: white; box-shadow: 0 5px 0 #38b2d7; }
+        .check-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 #38b2d7; }
 
-    .target {
-      width: 100px; height: 100px;
-      border: 3px dashed #ccc; border-radius: 15px;
-      display: flex; justify-content: center; align-items: center;
-      background: #fafafa;
-      transition: background 0.2s;
-    }
+        /* OVERLAY STYLES */
+        .overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(74, 78, 142, 0.95);
+            display: none; /* Controlled by JS flex/none */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+            text-align: center;
+        }
 
-    .target.drag-over { background: #fff59d; border-color: var(--orange); border-style: solid; }
+        .overlay-content {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 40px;
+            max-width: 350px;
+            width: 100%;
+            box-shadow: 0 15px 0 rgba(0,0,0,0.2);
+        }
 
-    #tray {
-      width: 90%; max-width: 450px; min-height: 100px;
-      background: white; border: 4px solid var(--sky);
-      border-radius: 25px; display: flex;
-      justify-content: space-evenly; align-items: center;
-      padding: 15px; box-shadow: 0 6px 0 #1565c0;
-    }
+        .overlay-msg { font-family: 'Fredoka One', cursive; font-size: 1.5rem; color: var(--dark-purple); margin-bottom: 25px; }
 
-    .snack {
-      display: flex; flex-direction: column; align-items: center;
-      cursor: grab; user-select: none; width: 80px;
-      touch-action: none; 
-      transition: transform 0.1s;
-    }
+        .action-btn {
+            width: 100%;
+            padding: 20px;
+            border-radius: 20px;
+            border: none;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: white;
+            display: none;
+            margin-bottom: 10px;
+        }
 
-    .snack:hover { transform: scale(1.1); }
-    .snack:active { cursor: grabbing; }
+        #over-btn { background: var(--error-red); box-shadow: 0 6px 0 #d32f2f; }
+        #under-btn { background: var(--warning-orange); box-shadow: 0 6px 0 #e67e22; }
+        #play-again-btn { background: var(--leaf-green); box-shadow: 0 6px 0 #05b386; }
 
-    .snack-emoji { font-size: 42px; line-height: 1; }
-
-    .snack-label {
-      font-size: 11px; font-weight: bold; color: #333;
-      margin-top: 4px; text-align: center;
-    }
-
-    .dragging {
-      position: fixed !important;
-      pointer-events: none;
-      z-index: 1000;
-      transform: scale(1.3) !important;
-    }
-
-    #check-btn {
-      margin-top: 40px; padding: 18px 70px;
-      background: #4caf50; color: white;
-      border: none; border-radius: 50px;
-      font-size: 24px; font-weight: bold;
-      box-shadow: 0 6px 0 #2e7d32; cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    #check-btn:active {
-      transform: translateY(4px);
-      box-shadow: 0 2px 0 #2e7d32;
-    }
-
-    #overlay {
-      position: fixed; inset: 0; background: rgba(255,255,255,0.96);
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; z-index: 2000;
-    }
-    .hidden { display: none !important; }
-  </style>
+        .action-btn:active { transform: translateY(4px); box-shadow: none; }
+    </style>
 </head>
 <body>
 
-  <h2>Summer Snack Party! 🍉</h2>
-
-  <div id="clue-board">
-    <div class="clue-item">🦁 Anu: Not mango or ice cream</div>
-    <div class="clue-item">🦁 Bala: Cold but not fruit</div>
-    <div class="clue-item">🦁 Chitra: The snack is yellow</div>
-    <div class="clue-item">🦁 Deepak: Fresh Lemon Juice</div>
-  </div>
-
-  <div class="grid">
-    <div class="target-box">
-      <div class="char-tag anu">👩 Anu</div>
-      <div class="target" data-ans="🍉"></div>
+<div class="game-card">
+    <div class="header-badge">Level 1: Money Master</div>
+    <h2>Ravi's Pocket Money</h2>
+    <div class="progress-container"><div id="progress-bar"></div></div>
+    
+    <div class="budget-grid">
+        <div class="item-row"><div class="icon-circle">🍿</div><div class="label-text">Snacks</div><input type="number" class="budget-input" placeholder="0" inputmode="numeric"></div>
+        <div class="item-row"><div class="icon-circle">🐷</div><div class="label-text">Savings</div><input type="number" class="budget-input" placeholder="0" inputmode="numeric"></div>
+        <div class="item-row"><div class="icon-circle">🚕</div><div class="label-text">Travel</div><input type="number" class="budget-input" placeholder="0" inputmode="numeric"></div>
+        <div class="item-row"><div class="icon-circle">📚</div><div class="label-text">School</div><input type="number" class="budget-input" placeholder="0" inputmode="numeric"></div>
     </div>
-    <div class="target-box">
-      <div class="char-tag bala">👦 Bala</div>
-      <div class="target" data-ans="🍦"></div>
-    </div>
-    <div class="target-box">
-      <div class="char-tag chitra">👧 Chitra</div>
-      <div class="target" data-ans="🥭"></div>
-    </div>
-    <div class="target-box">
-      <div class="char-tag deepak">👦 Deepak</div>
-      <div class="target" data-ans="🍹"></div>
-    </div>
-  </div>
 
-  <div id="tray">
-    <div class="snack" data-val="🍉">
-      <span class="snack-emoji">🍉</span>
-      <span class="snack-label">Watermelon</span>
+    <div class="total-box"><span>Total:</span><span>₹<span id="total-display">0</span> / 300</span></div>
+    <button id="check-btn" class="check-btn">Check My Budget!</button>
+</div>
+
+<div id="game-overlay" class="overlay">
+    <div class="overlay-content">
+        <div id="overlay-msg" class="overlay-msg"></div>
+        <button id="over-btn" class="action-btn">Too Much! Edit 🔄</button>
+        <button id="under-btn" class="action-btn">Too Little! Edit 🔄</button>
+        <button id="play-again-btn" class="action-btn">Perfect! Reset 🎮</button>
     </div>
-    <div class="snack" data-val="🍦">
-      <span class="snack-emoji">🍦</span>
-      <span class="snack-label">Ice Cream</span>
-    </div>
-    <div class="snack" data-val="🍹">
-      <span class="snack-emoji">🍹</span>
-      <span class="snack-label">Lemon Juice</span>
-    </div>
-    <div class="snack" data-val="🥭">
-      <span class="snack-emoji">🥭</span>
-      <span class="snack-label">Mango</span>
-    </div>
-  </div>
+</div>
 
-  <button id="check-btn" onclick="check()">CHECK! ✅</button>
+<script>
+    const inputs = document.querySelectorAll('.budget-input');
+    const totalDisplay = document.getElementById('total-display');
+    const progressBar = document.getElementById('progress-bar');
+    const checkBtn = document.getElementById('check-btn');
+    
+    const overlay = document.getElementById('game-overlay');
+    const overlayMsg = document.getElementById('overlay-msg');
+    const overBtn = document.getElementById('over-btn');
+    const underBtn = document.getElementById('under-btn');
+    const playAgainBtn = document.getElementById('play-again-btn');
+    
+    const TARGET = 300;
 
-  <div id="overlay" class="hidden">
-    <h1 id="msg" style="text-align:center;"></h1>
-    <button onclick="location.reload()" style="padding:15px 40px; background:var(--sky); color:white; border:none; border-radius:30px; font-weight:bold; cursor:pointer;">PLAY AGAIN 🔄</button>
-  </div>
-
-      <a href="{{ url_for('index') }}" 
-   style="position: absolute; top: 10px; left: 10px; z-index: 1001; 
-          text-decoration: none; background: white; padding: 5px 15px; 
-          border-radius: 20px; border: 2px solid #ff6b6b; font-weight: bold; 
-          color: #ff6b6b; font-size: 0.8rem;">
-    🏠 Try More!
-</a>
-  <script>
-    let activeItem = null;
-
-    function onStart(e) {
-      activeItem = e.target.closest('.snack');
-      if (!activeItem) return;
-
-      const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-      const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
-
-      activeItem.classList.add('dragging');
-      moveAt(clientX, clientY);
+    // Calculates total and updates the blue/red progress bar
+    function updateVisuals() {
+        let total = 0;
+        inputs.forEach(input => { 
+            total += Math.max(0, parseFloat(input.value) || 0); 
+        });
+        totalDisplay.textContent = total;
+        
+        let percentage = (total / TARGET) * 100;
+        progressBar.style.width = Math.min(percentage, 100) + "%";
+        
+        // Change color to red if they go over the budget
+        progressBar.style.backgroundColor = (total > TARGET) ? "var(--error-red)" : "var(--bright-blue)";
     }
 
-    function onMove(e) {
-      if (!activeItem) return;
+    function checkBudget() {
+        let total = 0;
+        let hasEmpty = false;
 
-      if (e.cancelable) e.preventDefault();
+        inputs.forEach(input => {
+            if (input.value.trim() === "") hasEmpty = true;
+            total += Math.max(0, parseFloat(input.value) || 0);
+        });
 
-      const clientX = e.type.includes('touch') ? e.touches[0].clientX : e.clientX;
-      const clientY = e.type.includes('touch') ? e.touches[0].clientY : e.clientY;
+        if (hasEmpty) {
+            alert("Please fill all boxes! 🔍");
+            return;
+        }
 
-      moveAt(clientX, clientY);
+        // Show the overlay
+        overlay.style.display = "flex";
+        
+        // Reset button visibility
+        overBtn.style.display = "none";
+        underBtn.style.display = "none";
+        playAgainBtn.style.display = "none";
 
-      const hit = document.elementFromPoint(clientX, clientY)?.closest('.target');
-      document.querySelectorAll('.target').forEach(t => t.classList.remove('drag-over'));
-      if (hit) hit.classList.add('drag-over');
+        if (total === TARGET) {
+            overlayMsg.textContent = "🌟 AMAZING! You balanced the budget perfectly!";
+            playAgainBtn.style.display = "block";
+        } else if (total > TARGET) {
+            overlayMsg.textContent = `😮 Oops! You spent ₹${total - TARGET} too much.`;
+            overBtn.style.display = "block";
+        } else {
+            overlayMsg.textContent = `🤔 Close! You still have ₹${TARGET - total} left.`;
+            underBtn.style.display = "block";
+        }
     }
 
-    function onEnd(e) {
-      if (!activeItem) return;
-
-      const clientX = e.type.includes('mouse') ? e.clientX : e.changedTouches[0].clientX;
-      const clientY = e.type.includes('mouse') ? e.clientY : e.changedTouches[0].clientY;
-
-      activeItem.classList.remove('dragging');
-
-      activeItem.style.display = 'none'; 
-      const dropZone = document.elementFromPoint(clientX, clientY)?.closest('.target, #tray');
-      activeItem.style.display = 'flex';
-      activeItem.style.position = 'static';
-
-      if (dropZone && dropZone.id !== 'tray') {
-        const old = dropZone.querySelector('.snack');
-        if (old) document.getElementById('tray').appendChild(old);
-        dropZone.appendChild(activeItem);
-      } else {
-        document.getElementById('tray').appendChild(activeItem);
-      }
-
-      document.querySelectorAll('.target').forEach(t => t.classList.remove('drag-over'));
-      activeItem = null;
+    // This closes the overlay WITHOUT clearing the inputs (User can edit)
+    function continueEditing() {
+        overlay.style.display = "none";
     }
 
-    function moveAt(x, y) {
-      activeItem.style.left = (x - (activeItem.offsetWidth / 2)) + 'px';
-      activeItem.style.top = (y - (activeItem.offsetHeight / 2)) + 'px';
+    // This clears everything for a new game (User won)
+    function startNewGame() {
+        inputs.forEach(input => input.value = "");
+        updateVisuals();
+        overlay.style.display = "none";
     }
 
-    // Attach listeners
-    document.querySelectorAll('.snack').forEach(s => {
-      s.addEventListener('mousedown', onStart);
-      s.addEventListener('touchstart', onStart, {passive: false});
-    });
+    // Event Listeners
+    inputs.forEach(input => input.addEventListener('input', updateVisuals));
+    checkBtn.addEventListener('click', checkBudget);
 
-    document.addEventListener('mousemove', onMove);
-    document.addEventListener('touchmove', onMove, {passive: false});
-    document.addEventListener('mouseup', onEnd);
-    document.addEventListener('touchend', onEnd);
+    // If they are wrong, just let them edit
+    overBtn.addEventListener('click', continueEditing);
+    underBtn.addEventListener('click', continueEditing);
 
-    function check() {
-      let score = 0;
-      const targets = document.querySelectorAll('.target');
-      targets.forEach(t => {
-        const snack = t.querySelector('.snack');
-        if (snack && snack.dataset.val === t.dataset.ans) score++;
-      });
-      
-      const overlay = document.getElementById('overlay');
-      const msg = document.getElementById('msg');
-      overlay.classList.remove('hidden');
-      
-      if (score === targets.length) {
-        msg.innerHTML = "🥳 YAY!<br>Everyone has the right snack!";
-        msg.style.color = "#4caf50";
-      } else {
-        msg.innerHTML = "🧐 Hmm...<br>Someone has the wrong snack.<br>Check the clues!";
-        msg.style.color = "#f06292";
-      }
-    }
-  </script>
+    // If they won, let them start a fresh round
+    playAgainBtn.addEventListener('click', startNewGame);
+</script>
+
 </body>
 </html>

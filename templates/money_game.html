@@ -12,6 +12,7 @@
             --leaf-green: #06d6a0;
             --candy-pink: #f15bb5;
             --dark-purple: #4a4e8e;
+            --error-red: #ff4d4d;
         }
 
         * {
@@ -28,7 +29,6 @@
             justify-content: center;
             align-items: center; 
             min-height: 100vh;
-            padding-top: env(safe-area-inset-top);
         }
 
         .game-card {
@@ -40,8 +40,6 @@
             box-shadow: 0 8px 0 #cbd5e0;
             border: 3px solid var(--dark-purple);
             text-align: center;
-            margin-top: 20px;
-            margin-bottom: 20px;
         }
 
         .header-badge {
@@ -54,7 +52,6 @@
             font-size: 0.9rem;
             margin-bottom: 10px;
             text-transform: uppercase;
-            letter-spacing: 1px;
         }
 
         h2 {
@@ -71,41 +68,39 @@
             margin-bottom: 25px;
             overflow: hidden;
             border: 2px solid #ddd;
-            position: relative;
         }
 
         #progress-bar {
             width: 0%;
             height: 100%;
-            background: var(--leaf-green);
-            transition: width 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: var(--bright-blue);
+            transition: width 0.4s ease;
         }
 
         .budget-grid {
             display: grid;
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .item-row {
             display: flex;
             align-items: center;
             background: #fdfdfd;
-            padding: 15px;
+            padding: 12px;
             border-radius: 20px;
             border: 2px solid #f0f0f0;
-            box-shadow: inset 0 -3px 0 #eee;
         }
 
         .icon-circle {
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             background: #fff;
-            border-radius: 15px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.6rem;
+            font-size: 1.4rem;
             margin-right: 12px;
             border: 2px solid #eee;
         }
@@ -118,77 +113,78 @@
             font-weight: 800;
         }
 
-        .input-wrapper {
-            width: 95px;
-        }
-
         input[type="number"] {
-            width: 100%;
-            padding: 12px 5px;
+            width: 85px;
+            padding: 10px 5px;
             border: 3px solid #e2e8f0;
             border-radius: 12px;
-            font-size: 1.2rem;
             font-family: 'Fredoka One', cursive;
             text-align: center;
-            color: var(--dark-purple);
             outline: none;
             font-size: 16px; 
-        }
-
-        input[type="number"]:focus {
-            border-color: var(--bright-blue);
-            background: #f0faff;
         }
 
         .total-box {
             background: var(--dark-purple);
             color: white;
-            padding: 18px;
+            padding: 15px;
             border-radius: 20px;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             font-family: 'Fredoka One', cursive;
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border-radius: 20px;
+            border: none;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .btn:active { transform: scale(0.98); }
+
+        #check-btn {
+            background: var(--bright-blue);
+            color: white;
+            box-shadow: 0 5px 0 #38b2d7;
+        }
+
+        #play-again-btn {
+            background: var(--leaf-green);
+            color: white;
+            box-shadow: 0 5px 0 #05b386;
+            display: none;
         }
 
         #status-msg {
             margin-top: 15px;
-            font-size: 1rem;
             padding: 15px;
             border-radius: 15px;
-            display: none;
             font-weight: 800;
-            border: 2px solid transparent;
+            display: none;
         }
 
-        .win { 
-            background: #e6fffa; 
-            color: #2c7a7b; 
-            border-color: var(--leaf-green) !important;
-            display: block !important; 
-        }
-        .oops { 
-            background: #fff5f5; 
-            color: #c53030; 
-            border-color: #feb2b2 !important;
-            display: block !important; 
-        }
-        .pending { 
-            background: #fffaf0; 
-            color: #9c4221; 
-            border-color: var(--sunny-yellow) !important;
-            display: block !important; 
-        }
+        .win { background: #e6fffa; color: #2c7a7b; border: 2px solid var(--leaf-green); display: block !important; }
+        .oops { background: #fff5f5; color: #c53030; border: 2px solid #feb2b2; display: block !important; }
+        .pending { background: #fffaf0; color: #9c4221; border: 2px solid var(--sunny-yellow); display: block !important; }
 
-        @media (max-height: 600px) {
-            body { align-items: flex-start; }
-            .game-card { margin-top: 10px; padding: 15px; }
-            h2 { font-size: 1.3rem; }
+        .home-link {
+            position: absolute; top: 10px; left: 10px;
+            text-decoration: none; background: white; padding: 5px 15px; 
+            border-radius: 20px; border: 2px solid #ff6b6b; 
+            color: #ff6b6b; font-size: 0.8rem; font-weight: bold;
         }
     </style>
 </head>
 <body>
+
+<a href="/" class="home-link">🏠 Try More!</a>
 
 <div class="game-card">
     <div class="header-badge">Level 1: Money Master</div>
@@ -202,25 +198,22 @@
         <div class="item-row">
             <div class="icon-circle">🍿</div>
             <div class="label-text">Snacks</div>
-            <div class="input-wrapper"><input type="number" class="budget-input" placeholder="0" inputmode="numeric"></div>
+            <input type="number" class="budget-input" placeholder="0" inputmode="numeric">
         </div>
-
         <div class="item-row">
             <div class="icon-circle">🐷</div>
             <div class="label-text">Savings</div>
-            <div class="input-wrapper"><input type="number" class="budget-input" placeholder="0" inputmode="numeric"></div>
+            <input type="number" class="budget-input" placeholder="0" inputmode="numeric">
         </div>
-
         <div class="item-row">
-            <div class="icon-circle">🚕</div>
+            <div class="icon-circle"> taxi </div>
             <div class="label-text">Travel</div>
-            <div class="input-wrapper"><input type="number" class="budget-input" placeholder="0" inputmode="numeric"></div>
+            <input type="number" class="budget-input" placeholder="0" inputmode="numeric">
         </div>
-
         <div class="item-row">
             <div class="icon-circle">📚</div>
             <div class="label-text">School</div>
-            <div class="input-wrapper"><input type="number" class="budget-input" placeholder="0" inputmode="numeric"></div>
+            <input type="number" class="budget-input" placeholder="0" inputmode="numeric">
         </div>
     </div>
 
@@ -229,54 +222,83 @@
         <span>₹<span id="total-display">0</span> / 300</span>
     </div>
 
+    <button id="check-btn" class="btn">Check My Budget!</button>
+    <button id="play-again-btn" class="btn">Play Again! 🎮</button>
+
     <div id="status-msg"></div>
 </div>
-    <a href="{{ url_for('index') }}" 
-   style="position: absolute; top: 10px; left: 10px; z-index: 1001; 
-          text-decoration: none; background: white; padding: 5px 15px; 
-          border-radius: 20px; border: 2px solid #ff6b6b; font-weight: bold; 
-          color: #ff6b6b; font-size: 0.8rem;">
-    🏠 Try More!
-</a>
 
 <script>
     const inputs = document.querySelectorAll('.budget-input');
     const totalDisplay = document.getElementById('total-display');
     const statusMsg = document.getElementById('status-msg');
     const progressBar = document.getElementById('progress-bar');
+    const checkBtn = document.getElementById('check-btn');
+    const playAgainBtn = document.getElementById('play-again-btn');
     const TARGET = 300;
 
-    function updateGame() {
+    // Updates the bar and total as the user types
+    function updateVisuals() {
         let total = 0;
         inputs.forEach(input => {
             total += Math.max(0, parseFloat(input.value) || 0);
         });
 
         totalDisplay.textContent = total;
-        
         let percentage = (total / TARGET) * 100;
         progressBar.style.width = Math.min(percentage, 100) + "%";
         
-        if (total > TARGET) {
-            progressBar.style.backgroundColor = "#fc8181";
-            statusMsg.textContent = "😮 Oh no! ₹" + (total - TARGET) + " over budget!";
-            statusMsg.className = "oops";
-        } else if (total === TARGET) {
-            progressBar.style.backgroundColor = "var(--leaf-green)";
+        // Change bar color if they go over while typing
+        progressBar.style.backgroundColor = total > TARGET ? "var(--error-red)" : "var(--bright-blue)";
+    }
+
+    // Logic for when the "Check" button is clicked
+    function checkBudget() {
+        let total = 0;
+        let emptyFields = false;
+
+        inputs.forEach(input => {
+            if (input.value === "") emptyFields = true;
+            total += Math.max(0, parseFloat(input.value) || 0);
+        });
+
+        // 1. Check if all 4 are filled
+        if (emptyFields) {
+            statusMsg.textContent = "Fill in all 4 boxes first! 🤔";
+            statusMsg.className = "pending";
+            return;
+        }
+
+        // 2. Check the math
+        if (total === TARGET) {
             statusMsg.textContent = "🌟 Perfect! You shared it exactly!";
             statusMsg.className = "win";
-        } else if (total > 0) {
-            progressBar.style.backgroundColor = "var(--bright-blue)";
-            statusMsg.textContent = "You still have ₹" + (TARGET - total) + " left!";
-            statusMsg.className = "pending";
+            checkBtn.style.display = "none";
+            playAgainBtn.style.display = "block";
+            progressBar.style.backgroundColor = "var(--leaf-green)";
+        } else if (total > TARGET) {
+            statusMsg.textContent = "😮 Oh no! ₹" + (total - TARGET) + " over. Try again!";
+            statusMsg.className = "oops";
         } else {
-            statusMsg.style.display = "none";
+            statusMsg.textContent = "You still have ₹" + (TARGET - total) + " left. Try again!";
+            statusMsg.className = "oops";
         }
     }
 
+    function resetGame() {
+        inputs.forEach(input => input.value = "");
+        updateVisuals();
+        statusMsg.style.display = "none";
+        playAgainBtn.style.display = "none";
+        checkBtn.style.display = "block";
+    }
+
     inputs.forEach(input => {
-        input.addEventListener('input', updateGame);
+        input.addEventListener('input', updateVisuals);
     });
+
+    checkBtn.addEventListener('click', checkBudget);
+    playAgainBtn.addEventListener('click', resetGame);
 </script>
 
 </body>

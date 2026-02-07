@@ -14,44 +14,86 @@
     }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: var(--bg);
       margin: 0;
       padding: 0;
-      touch-action: pan-y; 
-      overflow-y: auto;
       display: flex;
       justify-content: center;
       min-height: 100vh;
+      overflow-x: hidden;
     }
 
+    /* Fixed the spacing at the top for mobile devices */
     #game-container {
       width: 100%;
       max-width: 450px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 20px 10px 40px 10px; 
+      padding: 60px 15px 40px 15px; /* Top padding increased to 60px */
+      box-sizing: border-box;
+      position: relative;
     }
 
-    h2 { color: #d32f2f; margin: 10px 0 15px 0; font-size: 24px; text-align: center; }
+    .home-link {
+      position: absolute; 
+      top: 15px; /* Better margin from the very top */
+      left: 15px;
+      text-decoration: none; 
+      background: white; 
+      padding: 6px 14px; 
+      border-radius: 20px; 
+      border: 2px solid #ff6b6b; 
+      color: #ff6b6b; 
+      font-size: 0.85rem; 
+      font-weight: bold;
+      z-index: 2001;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    h2 { 
+      color: #d32f2f; 
+      margin: 15px 0 20px 0; /* Added more space below the title */
+      font-size: 26px; 
+      text-align: center;
+      line-height: 1.2;
+    }
 
     #clue-board {
-      width: 95%;
+      width: 100%;
       background: white;
       border: 4px solid var(--orange);
       border-radius: 20px;
-      padding: 12px;
+      padding: 15px;
       margin-bottom: 20px;
       box-shadow: 0 6px 0px #e65100;
+      box-sizing: border-box;
     }
 
-    .clue-item { font-size: 14px; margin-bottom: 5px; font-weight: bold; color: #5d4037; }
+    .clue-item { font-size: 15px; margin-bottom: 6px; font-weight: bold; color: #5d4037; }
+
+    /* The Tray - Positioned for easy reach */
+    #tray {
+      width: 100%;
+      min-height: 90px;
+      background: white;
+      border: 4px solid var(--sky);
+      border-radius: 25px;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 0px #1565c0;
+      box-sizing: border-box;
+    }
 
     .grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
+      gap: 15px;
+      width: 100%;
       margin-bottom: 20px;
     }
 
@@ -60,19 +102,19 @@
       flex-direction: column;
       align-items: center;
       background: white;
-      padding: 10px;
+      padding: 12px;
       border-radius: 20px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     }
 
     .char-tag {
-      font-size: 13px;
+      font-size: 14px;
       font-weight: 800;
-      margin-bottom: 8px;
-      padding: 4px 12px;
+      margin-bottom: 10px;
+      padding: 5px 0;
       border-radius: 12px;
       color: white;
-      width: 80%;
+      width: 90%;
       text-align: center;
     }
 
@@ -82,8 +124,8 @@
     .deepak { background: var(--green); }
 
     .target {
-      width: 95px;
-      height: 95px;
+      width: 90px;
+      height: 90px;
       border: 3px dashed #ccc;
       border-radius: 15px;
       display: flex;
@@ -94,21 +136,8 @@
 
     .target.drag-over { background: #fff59d; border-color: var(--orange); }
 
-    #tray {
-      width: 95%;
-      min-height: 90px;
-      background: white;
-      border: 4px solid var(--sky);
-      border-radius: 25px;
-      display: flex;
-      justify-content: space-evenly;
-      align-items: center;
-      padding: 10px;
-      box-shadow: 0 6px 0px #1565c0;
-    }
-
     .snack {
-      font-size: 40px;
+      font-size: 42px;
       cursor: grab;
       display: flex;
       flex-direction: column;
@@ -119,7 +148,7 @@
     }
 
     .snack-label {
-      font-size: 10px;
+      font-size: 11px;
       font-weight: bold;
       color: #333;
       margin-top: -5px;
@@ -129,13 +158,13 @@
     .target .snack-label { display: block; }
 
     #check-btn {
-      margin-top: 25px;
-      padding: 12px 50px;
+      width: 80%;
+      padding: 15px;
       background: #4caf50;
       color: white;
       border: none;
       border-radius: 50px;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: bold;
       box-shadow: 0 6px 0px #2e7d32;
       cursor: pointer;
@@ -157,28 +186,27 @@
     }
 
     .hidden { display: none !important; }
-
-    .home-link {
-      position: absolute; top: 10px; left: 10px;
-      text-decoration: none; background: white; padding: 5px 15px; 
-      border-radius: 20px; border: 2px solid #ff6b6b; 
-      color: #ff6b6b; font-size: 0.8rem; font-weight: bold;
-      z-index: 2001;
-    }
   </style>
 </head>
 <body>
 
-<a href="/" class="home-link">🏠 Try More!</a>
-
 <div id="game-container">
+  <a href="/" class="home-link">🏠 Try More!</a>
+  
   <h2>Summer Snack Party! 🍉🍦</h2>
 
   <div id="clue-board">
-    <div class="clue-item">🦁 Anu: Not mango or ice cream!</div>
-    <div class="clue-item">🦁 Bala: Cold but not a fruit!</div>
-    <div class="clue-item">🦁 Chitra: Treat is yellow!</div>
-    <div class="clue-item">🦁 Deepak: Drinks something fresh!</div>
+    <div class="clue-item">💡 Anu: Not mango or ice cream!</div>
+    <div class="clue-item">💡 Bala: Cold but not a fruit!</div>
+    <div class="clue-item">💡 Chitra: Treat is yellow!</div>
+    <div class="clue-item">💡 Deepak: Drinks something fresh!</div>
+  </div>
+
+  <div id="tray">
+    <div class="snack" draggable="true" id="s1">🍉<span class="snack-label">Watermelon</span></div>
+    <div class="snack" draggable="true" id="s2">🍦<span class="snack-label">Ice Cream</span></div>
+    <div class="snack" draggable="true" id="s3">🍹<span class="snack-label">Lemonade</span></div>
+    <div class="snack" draggable="true" id="s4">🥭<span class="snack-label">Mango</span></div>
   </div>
 
   <div class="grid">
@@ -198,13 +226,6 @@
       <div class="char-tag deepak">👦 Deepak</div>
       <div class="target" data-ans="🍹"></div>
     </div>
-  </div>
-
-  <div id="tray">
-    <div class="snack" draggable="true" id="s1">🍉<span class="snack-label">Watermelon</span></div>
-    <div class="snack" draggable="true" id="s2">🍦<span class="snack-label">Ice Cream</span></div>
-    <div class="snack" draggable="true" id="s3">🍹<span class="snack-label">Lemonade</span></div>
-    <div class="snack" draggable="true" id="s4">🥭<span class="snack-label">Mango</span></div>
   </div>
 
   <button id="check-btn" onclick="check()">CHECK! ✅</button>
@@ -244,8 +265,8 @@
       if (!dragged) return;
       e.preventDefault(); 
       const touch = e.touches[0];
-      dragged.style.left = (touch.clientX - 30) + 'px';
-      dragged.style.top = (touch.clientY - 30) + 'px';
+      dragged.style.left = (touch.clientX - 35) + 'px';
+      dragged.style.top = (touch.clientY - 35) + 'px';
 
       targets.forEach(t => {
         const rect = t.getBoundingClientRect();

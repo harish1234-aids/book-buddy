@@ -30,16 +30,71 @@
         }
 
         .app-header {
-            font-family: 'Fredoka One', cursive;
+            display: flex;
+            align-items: center;
+            gap: 15px;
             background: var(--header-color);
             color: white;
-            border-radius: 25px;
-            padding: 15px 40px;
+            border-radius: 12px; 
+            padding: 10px 25px;
             text-align: center;
-            font-size: 2rem;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.8rem;
             margin-bottom: 40px;
-            box-shadow: 0 8px 0 #d63031;
+            box-shadow: 0 6px 0 #d63031; 
             width: fit-content;
+        }
+
+        .logo-circle {
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            border-radius: 50%; 
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 2px solid rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+
+        .logo-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+        }
+
+        .section-header {
+            width: 100%;
+            max-width: 1100px;
+            margin: 30px 0 15px 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .topic-text {
+            background-color: #ffffff;
+            color: #f0180c;
+            padding: 10px 20px;
+            font-weight: 900;
+            border-radius: 15px;
+            border: 2px solid #c8e6c9;
+            box-shadow: 0 4px 0 #c8e6c9;
+            display: inline-block;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        @media (min-width: 768px) {
+            .section-header {
+                justify-content: flex-start;
+                padding-left: 10px;
+            }
+            .topic-text {
+                border-left: 8px solid #f0180c; 
+                border-radius: 8px 15px 15px 8px;
+                text-align: left;
+            }
         }
 
         .game-container {
@@ -101,13 +156,14 @@
             color: #2d3436;
             border-top: 5px solid var(--card-border);
             background: #fff;
+            margin-top: auto;
         }
 
-        .word-bg   { background-color: var(--word-color); }
-        .logic-bg  { background-color: var(--logic-color); }
+        .word-bg { background-color: var(--word-color); }
+        .logic-bg { background-color: var(--logic-color); }
         .jumble-bg { background-color: var(--jumble-color); }
         .need-want-bg { background-color: var(--need-want-color); }
-        .money-bg  { background-color: var(--money-color); }
+        .money-bg { background-color: var(--money-color); }
 
         .word-grid-preview {
             display: grid;
@@ -156,41 +212,7 @@
             font-size: 1.8rem;
             border: 3px solid var(--card-border);
         }
-        .app-header {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background: var(--header-color);
-    color: white;
-    border-radius: 12px; 
-    padding: 10px 25px;
-    text-align: center;
-    font-family: 'Fredoka One', cursive;
-    font-size: 1.8rem;
-    margin-bottom: 40px;
-    box-shadow: 0 6px 0 #d63031; 
-    width: fit-content;
-}
-
-.logo-circle {
-    width: 50px;
-    height: 50px;
-    background-color: white;
-    border-radius: 50%; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    border: 2px solid rgba(0,0,0,0.1);
-    flex-shrink: 0;
-}
-
-.logo-circle img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover; 
-}
-</style>
+    </style>
 </head>
 <body>
 
@@ -200,72 +222,83 @@
     </div>
     <span>Book Buddy Times</span>
 </div>
- <div style="background-color: #e8f5e9; color: #2e7d32; padding: 5px 15px; border-radius: 20px; font-weight: bold; margin-bottom: 20px; border: 1px solid #c8e6c9; display: inline-block;">
-    Feb 2026 issue 2
+
+<div style="background-color: #e8f5e9; color: #2e7d32; padding: 5px 15px; border-radius: 20px; font-weight: bold; margin-bottom: 20px; border: 1px solid #c8e6c9; display: inline-block;">
+    Feb 2026 Issue 2
 </div>
 
-    <div class="game-container">
-        <a href="{{ url_for('word_search') }}" class="game-link">
-            <div class="card">
-                <div class="preview-box word-bg">
-                    <div class="word-grid-preview">
-                        <div class="letter-tile">W</div>
-                        <div class="letter-tile">O</div>
-                        <div class="letter-tile">R</div>
-                        <div class="letter-tile">D</div>
-                        <div class="letter-tile">O</div>
-                        <div class="letter-tile">D</div>
-                        <div class="letter-tile">R</div>
-                        <div class="letter-tile">O</div>
-                        <div class="letter-tile">W</div>
-                        <div class="magnifier">🔍</div>
-                    </div>
-                </div>
-                <div class="label-bar">Word Search 🔍</div>
-            </div>
-        </a>
+<div class="section-header">
+    <div class="topic-text">☀️ Beat the Heat: Chennai Summer Puzzle</div>
+</div>
 
-        <a href="{{ url_for('logic_riddle') }}" class="game-link">
-            <div class="card">
-                <div class="preview-box logic-bg">
-                    <span style="font-size: 4rem;">🍎</span>
-                    <span style="color: white; font-family: 'Fredoka One'; font-size: 3rem; margin-left: 10px;">?</span>
+<div class="game-container">
+    <a href="{{ url_for('word_search') }}" class="game-link">
+        <div class="card">
+            <div class="preview-box word-bg">
+                <div class="word-grid-preview">
+                    <div class="letter-tile">W</div>
+                    <div class="letter-tile">O</div>
+                    <div class="letter-tile">R</div>
+                    <div class="letter-tile">D</div>
+                    <div class="letter-tile">O</div>
+                    <div class="letter-tile">D</div>
+                    <div class="letter-tile">R</div>
+                    <div class="letter-tile">O</div>
+                    <div class="letter-tile">W</div>
+                    <div class="magnifier">🔍</div>
                 </div>
-                <div class="label-bar">Logic Riddles 💡</div>
             </div>
-        </a>
+            <div class="label-bar">Word Search 🔍</div>
+        </div>
+    </a>
 
-        <a href="{{ url_for('jumbled_words') }}" class="game-link">
-            <div class="card">
-                <div class="preview-box jumble-bg">
-                    <div class="jumble-text" style="font-size: 2.5rem;">ALEPP</div>
-                </div>
-                <div class="label-bar">Unscrubble Fun 🍏</div>
+    <a href="{{ url_for('logic_riddle') }}" class="game-link">
+        <div class="card">
+            <div class="preview-box logic-bg">
+                <span style="font-size: 4rem;">🍎</span>
+                <span style="color: white; font-family: 'Fredoka One'; font-size: 3rem; margin-left: 10px;">?</span>
             </div>
-        </a>
+            <div class="label-bar">Logic Riddles 💡</div>
+        </div>
+    </a>
 
-        <a href="{{ url_for('need_challenge') }}" class="game-link">
-            <div class="card">
-                <div class="preview-box need-want-bg">
-                    <div style="display: flex; gap: 10px; align-items: center;">
-                        <div class="icon-circle">🥦</div>
-                        <span style="color: white; font-family: 'Fredoka One';">VS</span>
-                        <div class="icon-circle">🎮</div>
-                    </div>
-                </div>
-                <div class="label-bar">Need or Want? 🛍️</div>
+    <a href="{{ url_for('jumbled_words') }}" class="game-link">
+        <div class="card">
+            <div class="preview-box jumble-bg">
+                <div class="jumble-text" style="font-size: 2.5rem;">ALEPP</div>
             </div>
-        </a>
+            <div class="label-bar">Unscramble Fun 🍏</div>
+        </div>
+    </a>
+</div>
 
-        <a href="{{ url_for('money_challenge') }}" class="game-link">
-            <div class="card">
-                <div class="preview-box money-bg">
-                    <div class="money-text" style="font-size: 3rem;">$ 1.00</div>
+<div class="section-header">
+    <div class="topic-text">🪙 Are you a Money Detective?</div>
+</div>
+
+<div class="game-container">
+    <a href="{{ url_for('need_challenge') }}" class="game-link">
+        <div class="card">
+            <div class="preview-box need-want-bg">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <div class="icon-circle">🥦</div>
+                    <span style="color: white; font-family: 'Fredoka One';">VS</span>
+                    <div class="icon-circle">🎮</div>
                 </div>
-                <div class="label-bar">Money Magic 🪙</div>
             </div>
-        </a>
-    </div>
+            <div class="label-bar">Need or Want? 🛍️</div>
+        </div>
+    </a>
+
+    <a href="{{ url_for('money_challenge') }}" class="game-link">
+        <div class="card">
+            <div class="preview-box money-bg">
+                <div class="money-text" style="font-size: 3rem;">$ 1.00</div>
+            </div>
+            <div class="label-bar">Money Magic 🪙</div>
+        </div>
+    </a>
+</div>
 
 </body>
 </html>

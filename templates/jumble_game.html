@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kids Word Fun!</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@800&display=swap');
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
@@ -32,46 +32,55 @@
             border: 6px solid #5271FF;
         }
 
+        /* Narrow Clue Box with Small Text */
         .clue-box {
             background: #F2F2F2;
-            padding: 15px;
-            border-radius: 20px;
-            font-size: 1.1rem;
-            color: #333;
-            margin-bottom: 20px;
-            border: 3px dashed #FF66C4;
+            padding: 8px 12px;
+            border-radius: 18px;
+            font-size: 0.85rem; 
+            font-family: 'Nunito', sans-serif; 
+            font-weight: 800;
+            color: #444;
+            margin: 0 auto 15px auto; 
+            max-width: 70%;           
+            border: 2px dashed #FF66C4;
+            line-height: 1.2;
         }
 
-        .zone-label { color: #5271FF; font-size: 14px; margin-bottom: 5px; text-transform: uppercase; }
+        .zone-label { color: #5271FF; font-size: 12px; margin-bottom: 5px; text-transform: uppercase; opacity: 0.8; }
         
         .slot-container, .bank-container {
             border-radius: 20px;
-            padding: 10px;
-            min-height: 70px;
+            padding: 8px;
+            min-height: 60px;
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 15px;
+            gap: 6px;
+            margin-bottom: 12px;
         }
 
-        .slot-container { background: #E8F0FE; border: 3px solid #B4D4FF; }
-        .bank-container { background: #FFE6F2; border: 3px solid #FFB6D9; margin-bottom: 20px; }
+        .slot-container { background: #E8F0FE; border: 2px solid #B4D4FF; }
+        .bank-container { background: #FFE6F2; border: 2px solid #FFB6D9; margin-bottom: 15px; }
 
+        /* Smaller Tiles for Long Words */
         .tile {
-            width: 44px;
-            height: 44px;
+            width: 36px;
+            height: 36px;
             background: #FF66C4;
             color: white;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            border-radius: 12px;
-            box-shadow: 0 5px 0 #b34789;
+            font-size: 18px;
+            border-radius: 10px;
+            box-shadow: 0 4px 0 #b34789;
             cursor: pointer;
             transition: transform 0.1s;
+            user-select: none;
         }
+
+        .tile:active { transform: translateY(2px); box-shadow: 0 2px 0 #b34789; }
 
         @keyframes blink {
             0% { transform: scale(1); background: #FF66C4; }
@@ -80,31 +89,31 @@
         }
         .hint-blink { animation: blink 0.8s infinite ease-in-out; z-index: 10; }
 
-        .btn-group { display: flex; flex-direction: column; gap: 10px; }
+        .btn-group { display: flex; flex-direction: column; gap: 8px; }
 
         button {
             width: 100%;
-            padding: 15px;
+            padding: 12px;
             font-family: 'Fredoka One', cursive;
-            font-size: 20px;
+            font-size: 18px;
             border: none;
             border-radius: 15px;
             cursor: pointer;
             color: white;
         }
 
-        #hintBtn { background: #FFBD59; box-shadow: 0 6px 0 #cc9747; }
-        #hintBtn:disabled { background: #ccc; box-shadow: 0 6px 0 #999; cursor: not-allowed; opacity: 0.7; }
+        #hintBtn { background: #FFBD59; box-shadow: 0 5px 0 #cc9747; }
+        #hintBtn:disabled { background: #ccc; box-shadow: 0 5px 0 #999; cursor: not-allowed; opacity: 0.7; }
 
-        #actionBtn { background: #38B6FF; box-shadow: 0 6px 0 #2a88bf; }
-        #actionBtn.wrong { background: #FF5757; box-shadow: 0 6px 0 #c44242; }
+        #actionBtn { background: #38B6FF; box-shadow: 0 5px 0 #2a88bf; }
+        #actionBtn.wrong { background: #FF5757; box-shadow: 0 5px 0 #c44242; }
 
-        .score-board { margin-top: 15px; font-size: 1.2rem; color: #5271FF; }
+        .score-board { margin-top: 10px; font-size: 1.1rem; color: #5271FF; }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            75% { transform: translateX(10px); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
         }
         .shake { animation: shake 0.4s; }
     </style>
@@ -113,33 +122,33 @@
 
     <div class="game-container" id="gameBox">
         <div class="clue-box" id="clue">Loading...</div>
-        <div class="zone-label">Tap letters to build word:</div>
+        <div class="zone-label">Move letters here:</div>
         <div id="answerZone" class="slot-container"></div>
-        <div class="zone-label">Letter Bank:</div>
+        <div class="zone-label">Tap a letter:</div>
         <div id="letterBank" class="bank-container"></div>
 
         <div class="btn-group">
             <button id="hintBtn" onclick="showHint()">Hint 💡 (3)</button>
-            <button id="actionBtn" onclick="handleAction()">Check Answer! ✅</button>
+            <button id="actionBtn" onclick="handleAction()">Check! ✅</button>
         </div>
         <div class="score-board" id="scoreText">Stars: 0 ⭐</div>
     </div>
 
-                <a href="{{ url_for('index') }}" 
-   style="position: absolute; top: 10px; left: 10px; z-index: 1001; 
-          text-decoration: none; background: white; padding: 5px 15px; 
-          border-radius: 20px; border: 2px solid #ff6b6b; font-weight: bold; 
-          color: #ff6b6b; font-size: 0.8rem;">
-    🏠 Try More!
-</a>
+    <a href="{{ url_for('index') }}" 
+       style="position: absolute; top: 10px; left: 10px; z-index: 1001; 
+              text-decoration: none; background: white; padding: 5px 12px; 
+              border-radius: 20px; border: 2px solid #ff6b6b; font-weight: bold; 
+              color: #ff6b6b; font-size: 0.75rem;">
+        🏠 Try More!
+    </a>
 
 <script>
     const words = [
         { word: "autorickshaw", clue: "🚕 A three-wheeled taxi!" },
-        { word: "humidity", clue: "💦 When it feels sticky and sweaty." },
-        { word: "sunscreen", clue: "🧴 Protects skin from the sun." },
-        { word: "watermelon", clue: "🍉 Green outside, red inside!" },
-        { word: "heatwave", clue: "☀️ When it's very hot for days." }
+        { word: "humidity", clue: "💦 Sticky and sweaty air." },
+        { word: "sunscreen", clue: "🧴 Protects skin from sun." },
+        { word: "watermelon", clue: "🍉 Green out, red inside!" },
+        { word: "heatwave", clue: "☀️ Very hot for many days." }
     ];
 
     let currentIdx = 0;
@@ -155,14 +164,13 @@
     function initGame() {
         if (currentIdx >= words.length) {
             document.getElementById("gameBox").innerHTML = `
-                <h1 style="color:#FF66C4">🏆 YOU WON!</h1>
+                <h1 style="color:#FF66C4; font-size: 2rem;">🏆 SUPER!</h1>
                 <p>You got ${score} Stars!</p>
-                <button id="actionBtn" onclick="location.reload()">Play Again!</button>
+                <button id="actionBtn" style="background:#7ED957; box-shadow: 0 5px 0 #5da63f;" onclick="location.reload()">Play Again!</button>
             `;
             return;
         }
 
-        // Reset Hint Counter for new question
         hintsLeft = 3;
         updateHintButton();
 
@@ -189,20 +197,15 @@
 
     function showHint() {
         if (hintsLeft <= 0) return;
-
         const correctWord = words[currentIdx].word.toUpperCase();
         const currentBuilt = Array.from(answerZone.children).map(t => t.innerText).join("");
         const nextLetterNeeded = correctWord[currentBuilt.length];
-
         if (!nextLetterNeeded) return;
-
         const bankTiles = Array.from(letterBank.children);
         const targetTile = bankTiles.find(t => t.innerText === nextLetterNeeded && !t.classList.contains('hint-blink'));
-
         if (targetTile) {
             document.querySelectorAll('.tile').forEach(t => t.classList.remove('hint-blink'));
             targetTile.classList.add('hint-blink');
-            
             hintsLeft--;
             updateHintButton();
         }
@@ -211,7 +214,6 @@
     function moveTile(tile) {
         tile.classList.remove('hint-blink');
         if (isErrorState) resetButton();
-
         if (tile.parentElement.id === "letterBank") {
             answerZone.appendChild(tile);
         } else {
@@ -237,7 +239,7 @@
     }
 
     function resetButton() {
-        actionBtn.innerText = "Check Answer! ✅";
+        actionBtn.innerText = "Check! ✅";
         actionBtn.classList.remove("wrong");
         isErrorState = false;
     }

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Ravi's Money Game</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bright-blue: #4cc9f0;
+            --sunny-yellow: #fee440;
+            --leaf-green: #06d6a0;
+            --candy-pink: #f15bb5;
+            --dark-purple: #4a4e8e;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: #f0f4f8;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center; 
+            min-height: 100vh;
+            padding-top: env(safe-area-inset-top);
+        }
+
+        .game-card {
+            background-color: white;
+            width: 100%;
+            max-width: 420px;
+            padding: 25px 20px;
+            border-radius: 30px;
+            box-shadow: 0 8px 0 #cbd5e0;
+            border: 3px solid var(--dark-purple);
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header-badge {
+            background-color: var(--candy-pink);
+            color: white;
+            display: inline-block;
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        h2 {
+            color: var(--dark-purple);
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.6rem;
+            margin: 5px 0 20px 0;
+        }
+
+        .progress-container {
+            background: #eee;
+            height: 24px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            border: 2px solid #ddd;
+            position: relative;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background: var(--leaf-green);
+            transition: width 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .budget-grid {
+            display: grid;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .item-row {
+            display: flex;
+            align-items: center;
+            background: #fdfdfd;
+            padding: 15px;
+            border-radius: 20px;
+            border: 2px solid #f0f0f0;
+            box-shadow: inset 0 -3px 0 #eee;
+        }
+
+        .icon-circle {
+            width: 50px;
+            height: 50px;
+            background: #fff;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            margin-right: 12px;
+            border: 2px solid #eee;
+        }
+
+        .label-text {
+            flex-grow: 1;
+            text-align: left;
+            font-size: 1.1rem;
+            color: #444;
+            font-weight: 800;
+        }
+
+        .input-wrapper {
+            width: 95px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 5px;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-family: 'Fredoka One', cursive;
+            text-align: center;
+            color: var(--dark-purple);
+            outline: none;
+            font-size: 16px; 
+        }
+
+        input[type="number"]:focus {
+            border-color: var(--bright-blue);
+            background: #f0faff;
+        }
+
+        .total-box {
+            background: var(--dark-purple);
+            color: white;
+            padding: 18px;
+            border-radius: 20px;
+            font-size: 1.4rem;
+            font-family: 'Fredoka One', cursive;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #status-msg {
+            margin-top: 15px;
+            font-size: 1rem;
+            padding: 15px;
+            border-radius: 15px;
+            display: none;
+            font-weight: 800;
+            border: 2px solid transparent;
+        }
+
+        .win { 
+            background: #e6fffa; 
+            color: #2c7a7b; 
+            border-color: var(--leaf-green) !important;
+            display: block !important; 
+        }
+        .oops { 
+            background: #fff5f5; 
+            color: #c53030; 
+            border-color: #feb2b2 !important;
+            display: block !important; 
+        }
+        .pending { 
+            background: #fffaf0; 
+            color: #9c4221; 
+            border-color: var(--sunny-yellow) !important;
+            display: block !important; 
+        }
+
+        @media (max-height: 600px) {
+            body { align-items: flex-start; }
+            .game-card { margin-top: 10px; padding: 15px; }
+            h2 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-card">
+    <div class="header-badge">Level 1: Money Master</div>
+    <h2>Ravi's Pocket Money</h2>
+
+    <div class="progress-container">
+        <div id="progress-bar"></div>
+    </div>
+    
+    <div class="budget-grid">
+        <div class="item-row">
+            <div class="icon-circle">🍿</div>
+            <div class="label-text">Snacks</div>
+            <div class="input-wrapper"><input type="number" class="budget-input" placeholder="0" inputmode="numeric"></div>
+        </div>
+
+        <div class="item-row">
+            <div class="icon-circle">🐷</div>
+            <div class="label-text">Savings</div>
+            <div class="input-wrapper"><input type="number" class="budget-input" placeholder="0" inputmode="numeric"></div>
+        </div>
+
+        <div class="item-row">
+            <div class="icon-circle">🚕</div>
+            <div class="label-text">Travel</div>
+            <div class="input-wrapper"><input type="number" class="budget-input" placeholder="0" inputmode="numeric"></div>
+        </div>
+
+        <div class="item-row">
+            <div class="icon-circle">📚</div>
+            <div class="label-text">School</div>
+            <div class="input-wrapper"><input type="number" class="budget-input" placeholder="0" inputmode="numeric"></div>
+        </div>
+    </div>
+
+    <div class="total-box">
+        <span>Total:</span>
+        <span>₹<span id="total-display">0</span> / 300</span>
+    </div>
+
+    <div id="status-msg"></div>
+</div>
+    <a href="{{ url_for('index') }}" 
+   style="position: absolute; top: 10px; left: 10px; z-index: 1001; 
+          text-decoration: none; background: white; padding: 5px 15px; 
+          border-radius: 20px; border: 2px solid #ff6b6b; font-weight: bold; 
+          color: #ff6b6b; font-size: 0.8rem;">
+    🏠 Try More!
+</a>
+
+<script>
+    const inputs = document.querySelectorAll('.budget-input');
+    const totalDisplay = document.getElementById('total-display');
+    const statusMsg = document.getElementById('status-msg');
+    const progressBar = document.getElementById('progress-bar');
+    const TARGET = 300;
+
+    function updateGame() {
+        let total = 0;
+        inputs.forEach(input => {
+            total += Math.max(0, parseFloat(input.value) || 0);
+        });
+
+        totalDisplay.textContent = total;
+        
+        let percentage = (total / TARGET) * 100;
+        progressBar.style.width = Math.min(percentage, 100) + "%";
+        
+        if (total > TARGET) {
+            progressBar.style.backgroundColor = "#fc8181";
+            statusMsg.textContent = "😮 Oh no! ₹" + (total - TARGET) + " over budget!";
+            statusMsg.className = "oops";
+        } else if (total === TARGET) {
+            progressBar.style.backgroundColor = "var(--leaf-green)";
+            statusMsg.textContent = "🌟 Perfect! You shared it exactly!";
+            statusMsg.className = "win";
+        } else if (total > 0) {
+            progressBar.style.backgroundColor = "var(--bright-blue)";
+            statusMsg.textContent = "You still have ₹" + (TARGET - total) + " left!";
+            statusMsg.className = "pending";
+        } else {
+            statusMsg.style.display = "none";
+        }
+    }
+
+    inputs.forEach(input => {
+        input.addEventListener('input', updateGame);
+    });
+</script>
+
+</body>
+</html>

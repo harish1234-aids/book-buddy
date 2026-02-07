@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Kids Word Fun!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One&display=swap');
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            background: radial-gradient(circle, #FFDE59 0%, #FF914D 100%);
+            font-family: 'Fredoka One', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .game-container {
+            width: 92%;
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 12px 0px #d97b41;
+            border: 6px solid #5271FF;
+        }
+
+        .clue-box {
+            background: #F2F2F2;
+            padding: 15px;
+            border-radius: 20px;
+            font-size: 1.1rem;
+            color: #333;
+            margin-bottom: 20px;
+            border: 3px dashed #FF66C4;
+        }
+
+        .zone-label { color: #5271FF; font-size: 14px; margin-bottom: 5px; text-transform: uppercase; }
+        
+        .slot-container {
+            background: #E8F0FE;
+            border: 3px solid #B4D4FF;
+            border-radius: 20px;
+            padding: 10px;
+            min-height: 70px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .bank-container {
+            background: #FFE6F2;
+            border: 3px solid #FFB6D9;
+            border-radius: 20px;
+            padding: 10px;
+            min-height: 70px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .tile {
+            width: 44px;
+            height: 44px;
+            background: #FF66C4;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            border-radius: 12px;
+            box-shadow: 0 5px 0 #b34789;
+            cursor: pointer;
+            transition: transform 0.1s active;
+        }
+
+        .tile:active {
+            transform: scale(0.9);
+        }
+
+        #actionBtn {
+            width: 100%;
+            padding: 15px;
+            background: #38B6FF;
+            border: none;
+            border-radius: 15px;
+            color: white;
+            font-family: 'Fredoka One', cursive;
+            font-size: 22px;
+            box-shadow: 0 6px 0 #2a88bf;
+            cursor: pointer;
+        }
+
+        #actionBtn.wrong { background: #FF5757; box-shadow: 0 6px 0 #c44242; }
+
+        .score-board { margin-top: 15px; font-size: 1.2rem; color: #5271FF; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        .shake { animation: shake 0.4s; }
+    </style>
+</head>
+<body>
+
+    <div class="game-container" id="gameBox">
+        <div class="clue-box" id="clue">Loading...</div>
+
+        <div class="zone-label">Tap letters to build word:</div>
+        <div id="answerZone" class="slot-container"></div>
+
+        <div class="zone-label">Letter Bank:</div>
+        <div id="letterBank" class="bank-container"></div>
+
+        <button id="actionBtn" onclick="checkWord()">Check Answer! ✅</button>
+
+        <div class="score-board" id="scoreText">Stars: 0 ⭐</div>
+    </div>
+    <a href="{{ url_for('index') }}" 
+   style="position: absolute; top: 10px; left: 10px; z-index: 1001; 
+          text-decoration: none; background: white; padding: 5px 15px; 
+          border-radius: 20px; border: 2px solid #ff6b6b; font-weight: bold; 
+          color: #ff6b6b; font-size: 0.8rem;">
+    🏠 Try More!
+</a>
+
+<script>
+    const words = [
+        { word: "autorickshaw", clue: "🚕 A three-wheeled taxi!" },
+        { word: "humidity", clue: "💦 When it feels sticky and sweaty." },
+        { word: "sunscreen", clue: "🧴 Protects skin from the sun." },
+        { word: "watermelon", clue: "🍉 Green outside, red inside!" },
+        { word: "heatwave", clue: "☀️ When it's very hot for days." }
+    ];
+
+    let currentIdx = 0;
+    let score = 0;
+    let isErrorState = false;
+
+    const answerZone = document.getElementById('answerZone');
+    const letterBank = document.getElementById('letterBank');
+    const actionBtn = document.getElementById('actionBtn');
+
+    function initGame() {
+        if (currentIdx >= words.length) {
+            document.getElementById("gameBox").innerHTML = `
+                <h1 style="color:#FF66C4">🏆 YOU WON!</h1>
+                <p>You got ${score} Stars!</p>
+                <button id="actionBtn" onclick="location.reload()">Play Again!</button>
+            `;
+            return;
+        }
+
+        const data = words[currentIdx];
+        document.getElementById("clue").innerText = data.clue;
+        answerZone.innerHTML = "";
+        letterBank.innerHTML = "";
+        let chars = data.word.split("").sort(() => Math.random() - 0.5);
+        
+        chars.forEach(char => {
+            const tile = document.createElement("div");
+            tile.className = "tile";
+            tile.innerText = char.toUpperCase();
+            tile.onclick = () => moveTile(tile);
+            letterBank.appendChild(tile);
+        });
+
+        resetButton();
+    }
+
+    function moveTile(tile) {
+        if (isErrorState) resetButton();
+
+        if (tile.parentElement.id === "letterBank") {
+            answerZone.appendChild(tile);
+        } else {
+            letterBank.appendChild(tile);
+        }
+    }
+
+    function checkWord() {
+        const userWord = Array.from(answerZone.children)
+                              .map(t => t.innerText.toLowerCase())
+                              .join("");
+        
+        const correctWord = words[currentIdx].word;
+
+        if (userWord === correctWord) {
+            score++;
+            currentIdx++;
+            document.getElementById("scoreText").innerText = "Stars: " + score + " ⭐";
+            document.body.style.background = "#7ED957"; 
+            setTimeout(() => {
+                document.body.style.background = ""; 
+                initGame();
+            }, 500);
+        } else {
+            const box = document.getElementById("gameBox");
+            box.classList.add("shake");
+            actionBtn.innerText = "Try Again? 🔄";
+            actionBtn.classList.add("wrong");
+            isErrorState = true;
+            setTimeout(() => box.classList.remove("shake"), 400);
+        }
+    }
+
+    function resetButton() {
+        actionBtn.innerText = "Check Answer! ✅";
+        actionBtn.classList.remove("wrong");
+        isErrorState = false;
+
+        if (isErrorState === false) {
+             const tiles = Array.from(answerZone.children);
+             tiles.forEach(t => letterBank.appendChild(t));
+        }
+    }
+
+    function handleAction() {
+        if (isErrorState) {
+            resetButton();
+        } else {
+            checkWord();
+        }
+    }
+    actionBtn.onclick = handleAction;
+
+    initGame();
+</script>
+</body>
+</html>

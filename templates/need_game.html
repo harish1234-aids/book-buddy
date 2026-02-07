@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Money Detective Game</title>
+    <style>
+        :root {
+            --bg: #61d3ff;
+            --need-color: #4cd137;
+            --want-color: #ff4757;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg);
+            font-family: 'Arial Rounded MT Bold', 'Helvetica Rounded', Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .game-window {
+            width: 90%;
+            max-width: 380px;
+            background: var(--card-bg);
+            border-radius: 40px;
+            box-shadow: 0 15px 0px rgba(0,0,0,0.1);
+            padding: 25px;
+            text-align: center;
+            border: 8px solid #fff;
+            position: relative;
+        }
+
+        .display-card {
+            background: #f0f9ff;
+            border: 5px solid #e0f2fe;
+            border-radius: 30px;
+            margin: 20px 0;
+            padding: 30px 15px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .item-emoji {
+            font-size: 80px;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .item-label {
+            font-size: 24px;
+            color: #2d3436;
+            font-weight: bold;
+        }
+
+        .choice-row {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .big-btn {
+            flex: 1;
+            border: none;
+            border-radius: 25px;
+            padding: 20px 10px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .big-btn:active { transform: scale(0.9); }
+
+        .btn-green {
+            background: var(--need-color);
+            box-shadow: 0 8px 0 #3da52c;
+        }
+
+        .btn-red {
+            background: var(--want-color);
+            box-shadow: 0 8px 0 #d63031;
+        }
+
+        h1 { color: #2f3542; font-size: 22px; margin: 0; }
+        
+        .dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: #dfe6e9;
+            border-radius: 50%;
+        }
+
+        .dot.active { background: #f9ca24; }
+
+        .bounce { animation: bounce 0.5s; }
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .shake { animation: shake 0.3s; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="game-window" id="main">
+        <div id="quiz">
+            <h1>IS IT A NEED?</h1>
+            <div class="dots" id="progress"></div>
+
+            <div class="display-card" id="card">
+                <span class="item-emoji" id="emoji">🍚</span>
+                <span class="item-label" id="label">Rice & Sambar</span>
+            </div>
+
+            <div class="choice-row">
+                <button class="big-btn btn-green" onclick="play('N')">
+                    🍎<br>NEED
+                </button>
+                <button class="big-btn btn-red" onclick="play('W')">
+                    🎮<br>WANT
+                </button>
+            </div>
+        </div>
+
+        <div id="win" class="hidden">
+            <span style="font-size: 100px;">⭐</span>
+            <h1 style="font-size: 35px; color: #f9ca24;">AMAZING!</h1>
+            <p>You are a Super Detective!</p>
+            <button class="big-btn btn-green" style="width: 100%" onclick="location.reload()">Play Again!</button>
+        </div>
+    </div>
+        <a href="{{ url_for('index') }}" 
+   style="position: absolute; top: 10px; left: 10px; z-index: 1001; 
+          text-decoration: none; background: white; padding: 5px 15px; 
+          border-radius: 20px; border: 2px solid #ff6b6b; font-weight: bold; 
+          color: #ff6b6b; font-size: 0.8rem;">
+    🏠 Try More!
+</a>
+
+    <script>
+        const levels = [
+            { e: "🍚", l: "Lunch Food", a: "N" },
+            { e: "👔", l: "School Uniform", a: "N" },
+            { e: "🏏", l: "New Cricket Bat", a: "W" },
+            { e: "🍦", l: "Ice Cream", a: "W" },
+            { e: "📚", l: "School Books", a: "N" },
+            { e: "🚌", l: "Bus Ticket", a: "N" }
+        ];
+
+        let current = 0;
+
+        const dotContainer = document.getElementById('progress');
+        levels.forEach(() => {
+            const d = document.createElement('div');
+            d.className = 'dot';
+            dotContainer.appendChild(d);
+        });
+
+        function play(choice) {
+            const card = document.getElementById('card');
+            const correct = levels[current].a;
+
+            if (choice === correct) {
+                card.classList.add('bounce');
+                document.querySelectorAll('.dot')[current].classList.add('active');
+                
+                setTimeout(() => {
+                    card.classList.remove('bounce');
+                    current++;
+                    if (current < levels.length) {
+                        updateLevel();
+                    } else {
+                        document.getElementById('quiz').classList.add('hidden');
+                        document.getElementById('win').classList.remove('hidden');
+                    }
+                }, 600);
+            } else {
+                card.classList.add('shake');
+                setTimeout(() => card.classList.remove('shake'), 300);
+            }
+        }
+
+        function updateLevel() {
+            document.getElementById('emoji').innerText = levels[current].e;
+            document.getElementById('label').innerText = levels[current].l;
+        }
+
+        updateLevel();
+    </script>
+</body>
+</html>

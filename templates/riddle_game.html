@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Summer Snack Party! ☀️</title>
+  <style>
+    :root {
+      --bg: #fff9c4;
+      --sky: #2196f3;
+      --pink: #f06292;
+      --green: #4caf50;
+      --orange: #ff9800;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 0;
+      padding: 40px 10px 40px 10px;
+      padding-top: calc(env(safe-area-inset-top) + 40px);
+      touch-action: manipulation;
+      overflow-y: auto;
+    }
+
+    h2 { 
+      color: #d32f2f; 
+      margin: 20px 0; 
+      font-size: 26px; 
+      text-align: center; 
+    }
+
+    #clue-board {
+      width: 90%;
+      max-width: 400px;
+      background: white;
+      border: 4px solid var(--orange);
+      border-radius: 20px;
+      padding: 15px;
+      margin-bottom: 25px;
+      box-shadow: 0 6px 0px #e65100;
+    }
+
+    .clue-item {
+      font-size: 15px;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #5d4037;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .target-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: white;
+      padding: 12px;
+      border-radius: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .char-tag {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 10px;
+      padding: 4px 12px;
+      border-radius: 12px;
+      color: white;
+    }
+
+    .anu { background: var(--pink); }
+    .bala { background: var(--sky); }
+    .chitra { background: #9c27b0; }
+    .deepak { background: var(--green); }
+
+    .target {
+      width: 100px;
+      height: 100px;
+      border: 3px dashed #ccc;
+      border-radius: 15px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: 0.2s;
+    }
+
+    .target.drag-over { background: #fff59d; border-color: var(--orange); }
+
+    #tray {
+      width: 90%;
+      max-width: 400px;
+      min-height: 90px;
+      background: white;
+      border: 4px solid var(--sky);
+      border-radius: 25px;
+      display: flex;
+      justify-content: space-evenly;
+      align-items: center;
+      padding: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 6px 0px #1565c0;
+    }
+
+    .snack {
+      font-size: 45px;
+      cursor: grab;
+      touch-action: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .snack-label {
+      font-size: 12px;
+      font-weight: bold;
+      color: #333;
+      margin-top: -5px;
+      display: none;
+    }
+
+    .dragging .snack-label,
+    .target .snack-label {
+      display: block;
+    }
+
+    .dragging .snack-label {
+      position: absolute;
+      top: -25px;
+      background: #333;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 5px;
+    }
+
+    #check-btn {
+      padding: 15px 50px;
+      background: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      font-size: 22px;
+      font-weight: bold;
+      box-shadow: 0 6px 0px #2e7d32;
+      cursor: pointer;
+      margin-bottom: 30px;
+    }
+
+    #overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,255,255,0.96);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 3000;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #overlay-btn {
+      padding: 15px 35px;
+      border-radius: 50px;
+      border: none;
+      background: var(--sky);
+      color: white;
+      font-weight: bold;
+      font-size: 20px;
+      box-shadow: 0 6px 0px #1565c0;
+      cursor: pointer;
+    }
+
+    .hidden { display: none !important; }
+
+  </style>
+</head>
+<body>
+
+  <h2>Summer Snack Party! 🍉🍦</h2>
+
+  <div id="clue-board">
+    <div class="clue-item">🦁 Anu : Not mango and ice cream!</div>
+    <div class="clue-item">🦁 Bala : Cold but not a fruit!</div>
+    <div class="clue-item">🦁 Chitra : Treat is yellow!</div>
+    <div class="clue-item">🦁 Deepak : Drinks something fresh!</div>
+  </div>
+
+  <div class="grid">
+    <div class="target-box">
+      <div class="char-tag anu">👩 Anu</div>
+      <div class="target" data-ans="🍉"></div>
+    </div>
+    <div class="target-box">
+      <div class="char-tag bala">👦 Bala</div>
+      <div class="target" data-ans="🍦"></div>
+    </div>
+    <div class="target-box">
+      <div class="char-tag chitra">👧 Chitra</div>
+      <div class="target" data-ans="🥭"></div>
+    </div>
+    <div class="target-box">
+      <div class="char-tag deepak">👦 Deepak</div>
+      <div class="target" data-ans="🍹"></div>
+    </div>
+  </div>
+
+  <div id="tray">
+    <div class="snack" draggable="true">🍉<span class="snack-label">Watermelon</span></div>
+    <div class="snack" draggable="true">🍦<span class="snack-label">Ice Cream</span></div>
+    <div class="snack" draggable="true">🍹<span class="snack-label">Lemon Juice</span></div>
+    <div class="snack" draggable="true">🥭<span class="snack-label">Mango</span></div>
+  </div>
+
+  <button id="check-btn" onclick="check()">CHECK! ✅</button>
+
+  <div id="overlay" class="hidden">
+    <h1 id="msg"></h1>
+    <button id="overlay-btn" onclick="refreshGame()">TRY AGAIN! 🔄</button>
+  </div>
+
+          <a href="{{ url_for('index') }}" 
+   style="position: absolute; top: 10px; left: 10px; z-index: 1001; 
+          text-decoration: none; background: white; padding: 5px 15px; 
+          border-radius: 20px; border: 2px solid #ff6b6b; font-weight: bold; 
+          color: #ff6b6b; font-size: 0.8rem;">
+    🏠 Try More!
+</a>
+
+  <script>
+    let dragged = null;
+
+    function refreshGame() {
+      window.location.reload();
+    }
+
+    function handleDrop(target, element) {
+      target.classList.remove('drag-over');
+      if(target.classList.contains('target')) {
+        const existing = target.querySelector('.snack');
+        if(existing) document.getElementById('tray').appendChild(existing);
+      }
+      target.appendChild(element);
+      element.style.position = "static";
+      element.classList.remove('dragging');
+    }
+
+    document.querySelectorAll('.snack').forEach(s => {
+      s.addEventListener('dragstart', () => { dragged = s; s.classList.add('dragging'); });
+      s.addEventListener('dragend', () => s.classList.remove('dragging'));
+
+      s.addEventListener('touchstart', (e) => {
+        dragged = s;
+        s.classList.add('dragging');
+        s.style.position = "fixed";
+        s.style.zIndex = "2000";
+      }, {passive: false});
+
+      s.addEventListener('touchmove', (e) => {
+        if(!dragged) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        dragged.style.left = (touch.clientX - 35) + 'px';
+        dragged.style.top = (touch.clientY - 35) + 'px';
+        
+        const over = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.target');
+        document.querySelectorAll('.target').forEach(t => t.classList.remove('drag-over'));
+        if(over) over.classList.add('drag-over');
+      }, {passive: false});
+
+      s.addEventListener('touchend', (e) => {
+        if(!dragged) return;
+        const touch = e.changedTouches[0];
+        const target = document.elementFromPoint(touch.clientX, touch.clientY)?.closest('.target, #tray');
+        if(target) handleDrop(target, dragged);
+        else { 
+          document.getElementById('tray').appendChild(dragged); 
+          dragged.style.position = "static"; 
+        }
+        dragged.classList.remove('dragging');
+        dragged = null;
+      });
+    });
+
+    document.querySelectorAll('.target, #tray').forEach(t => {
+      t.addEventListener('dragover', e => e.preventDefault());
+      t.addEventListener('drop', () => handleDrop(t, dragged));
+    });
+
+    function check() {
+      const targets = document.querySelectorAll('.target');
+      let correct = 0;
+      targets.forEach(t => {
+        if(t.innerText.includes(t.dataset.ans)) correct++;
+      });
+
+      const overlay = document.getElementById('overlay');
+      const msg = document.getElementById('msg');
+      const btn = document.getElementById('overlay-btn');
+      
+      overlay.classList.remove('hidden');
+
+      if(correct === 4) {
+        msg.innerHTML = "🥳 YAY!<br>Everyone is happy!";
+        msg.style.color = "#4caf50";
+        btn.innerHTML = "PLAY AGAIN! 🌈";
+      } else {
+        msg.innerHTML = "🧐 Hmm...<br>Some snacks are wrong!";
+        msg.style.color = "#f06292";
+        btn.innerHTML = "TRY AGAIN! 🔄";
+      }
+    }
+  </script>
+</body>
+</html>

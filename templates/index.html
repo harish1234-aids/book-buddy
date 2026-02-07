@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Buddy Kids!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f0f9ff;
+            --header-color: #FF6B6B;
+            --word-color: #4ECDC4;
+            --logic-color: #A29BFE;
+            --jumble-color: #FF8A5B;
+            --need-want-color: #6c5ce7;
+            --money-color: #feca57;
+            --story-color: #ff7675;
+            --card-border: #34495e;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-header {
+            font-family: 'Fredoka One', cursive;
+            background: var(--header-color);
+            color: white;
+            border-radius: 25px;
+            padding: 15px 40px;
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 0 #d63031;
+            width: fit-content;
+        }
+
+        .game-container {
+            display: grid;
+            grid-template-columns: 1fr; 
+            gap: 25px;
+            width: 100%;
+            max-width: 1100px;
+            justify-content: center; 
+        }
+
+        @media (min-width: 768px) {
+            .game-container {
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .game-link {
+                width: 320px; 
+            }
+        }
+
+        .game-link {
+            text-decoration: none;
+            display: block;
+            transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .game-link:hover {
+            transform: scale(1.05) rotate(1deg);
+        }
+
+        .card {
+            border-radius: 30px;
+            overflow: hidden;
+            border: 5px solid var(--card-border);
+            background: white;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 0 rgba(0,0,0,0.05);
+        }
+
+        .preview-box {
+            height: 160px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .label-bar {
+            padding: 18px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.3rem;
+            color: #2d3436;
+            border-top: 5px solid var(--card-border);
+            background: #fff;
+        }
+
+        .word-bg   { background-color: var(--word-color); }
+        .logic-bg  { background-color: var(--logic-color); }
+        .jumble-bg { background-color: var(--jumble-color); }
+        .need-want-bg { background-color: var(--need-want-color); }
+        .money-bg  { background-color: var(--money-color); }
+
+        .word-grid-preview {
+            display: grid;
+            grid-template-columns: repeat(3, 35px);
+            grid-template-rows: repeat(3, 35px);
+            gap: 5px;
+            position: relative;
+        }
+
+        .letter-tile {
+            background: white;
+            border: 2px solid var(--card-border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fredoka One';
+            font-size: 1.2rem;
+            color: var(--header-color);
+            box-shadow: 0 3px 0 rgba(0,0,0,0.1);
+        }
+
+        .magnifier {
+            position: absolute;
+            font-size: 3rem;
+            bottom: -10px;
+            right: -15px;
+            filter: drop-shadow(2px 2px 0px rgba(0,0,0,0.2));
+            transform: rotate(-15deg);
+        }
+
+        .jumble-text, .money-text {
+            font-family: 'Fredoka One';
+            color: white;
+            text-shadow: 3px 3px 0px rgba(0,0,0,0.2);
+        }
+
+        .icon-circle {
+            background: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            border: 3px solid var(--card-border);
+        }
+        .app-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: var(--header-color);
+    color: white;
+    
+    /* Reduced from 25px to 12px for a flatter look */
+    border-radius: 12px; 
+    
+    padding: 10px 25px;
+    text-align: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.8rem;
+    margin-bottom: 40px;
+    box-shadow: 0 6px 0 #d63031; 
+    width: fit-content;
+}
+
+.logo-circle {
+    width: 50px;
+    height: 50px;
+    background-color: white;
+    border-radius: 50%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 2px solid rgba(0,0,0,0.1);
+    flex-shrink: 0;
+}
+
+.logo-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
+</style>
+</head>
+<body>
+
+<div class="app-header">
+    <div class="logo-circle">
+        <img src="{{ url_for('static', filename='bb.jpeg') }}" alt="Book Buddy Logo">
+    </div>
+    <span>Book Buddy Times</span>
+</div>
+
+    <div class="game-container">
+        <a href="{{ url_for('word_search') }}" class="game-link">
+            <div class="card">
+                <div class="preview-box word-bg">
+                    <div class="word-grid-preview">
+                        <div class="letter-tile">W</div>
+                        <div class="letter-tile">O</div>
+                        <div class="letter-tile">R</div>
+                        <div class="letter-tile">D</div>
+                        <div class="letter-tile">O</div>
+                        <div class="letter-tile">D</div>
+                        <div class="letter-tile">R</div>
+                        <div class="letter-tile">O</div>
+                        <div class="letter-tile">W</div>
+                        <div class="magnifier">🔍</div>
+                    </div>
+                </div>
+                <div class="label-bar">Word Search 🔍</div>
+            </div>
+        </a>
+
+        <a href="{{ url_for('logic_riddle') }}" class="game-link">
+            <div class="card">
+                <div class="preview-box logic-bg">
+                    <span style="font-size: 4rem;">🍎</span>
+                    <span style="color: white; font-family: 'Fredoka One'; font-size: 3rem; margin-left: 10px;">?</span>
+                </div>
+                <div class="label-bar">Logic Riddles 💡</div>
+            </div>
+        </a>
+
+        <a href="{{ url_for('jumbled_words') }}" class="game-link">
+            <div class="card">
+                <div class="preview-box jumble-bg">
+                    <div class="jumble-text" style="font-size: 2.5rem;">ALEPP</div>
+                </div>
+                <div class="label-bar">Unscrubble Fun 🍏</div>
+            </div>
+        </a>
+
+        <a href="{{ url_for('need_challenge') }}" class="game-link">
+            <div class="card">
+                <div class="preview-box need-want-bg">
+                    <div style="display: flex; gap: 10px; align-items: center;">
+                        <div class="icon-circle">🥦</div>
+                        <span style="color: white; font-family: 'Fredoka One';">VS</span>
+                        <div class="icon-circle">🎮</div>
+                    </div>
+                </div>
+                <div class="label-bar">Need or Want? 🛍️</div>
+            </div>
+        </a>
+
+        <a href="{{ url_for('money_challenge') }}" class="game-link">
+            <div class="card">
+                <div class="preview-box money-bg">
+                    <div class="money-text" style="font-size: 3rem;">$ 1.00</div>
+                </div>
+                <div class="label-bar">Money Magic 🪙</div>
+            </div>
+        </a>
+    </div>
+
+</body>
+</html>
